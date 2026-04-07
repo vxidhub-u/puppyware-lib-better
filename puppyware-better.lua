@@ -755,6 +755,9 @@ function library:saveconfig()
 		for c, d in pairs(v) do
 			cfg[i][c] = {}
 			for x, z in pairs(d) do
+				print("x: " .. tostring(x))
+				print("c: " .. tostring(c))
+				print("i: " .. tostring(i))
 				if typeof(z.current) == "Color3" then
 					cfg[i][c][x] = { z.current.R, z.current.G, z.current.B }
 				else
