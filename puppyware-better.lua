@@ -750,32 +750,31 @@ end
 function library:saveconfig()
 	local cfg = {}
 
-	for flag, object in pairs(self.pointers) do
-		if object and object.current ~= nil then
-			if typeof(object.current) == "Color3" then
-				cfg[flag] = {
-					R = object.current.R,
-					G = object.current.G,
-					B = object.current.B,
-				}
-			elseif typeof(object.current) == "EnumItem" then
-				cfg[flag] = tostring(object.current.Name)
-			else
-				cfg[flag] = object.current
-			end
-		end
-	end
-
-	local success, result = pcall(function()
-		return hs:JSONEncode(cfg)
-	end)
-
-	if not success then
-		warn("[CONFIG ERROR]: Failed to encode JSON:", result)
+	if not self.pointers then
+		print("[DEBUG]: self.pointers is NIL!")
 		return "{}"
 	end
 
-	return result
+	local count = 0
+	for i, v in pairs(self.pointers) do
+		count = count + 1
+
+		if v and v.current ~= nil then
+			if typeof(v.current) == "Color3" then
+				cfg[i] = { v.current.R, v.current.G, v.current.B }
+			elseif typeof(v.current) == "EnumItem" then
+				cfg[i] = v.current.Name
+			else
+				cfg[i] = v.current
+			end
+		else
+			print("[DEBUG]: Pointer " .. tostring(i) .. " has no .current value!")
+		end
+	end
+
+	local json = hs:JSONEncode(cfg)
+	print("[DEBUG]: Final JSON:", json)
+	return json
 end
 --
 function library:loadconfig(configName)
@@ -1948,9 +1947,8 @@ function sections:slider(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			print("Hi: " .. tostring(pointer))
-			self.pointers[tostring(pointer)] = slider
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = slider
 		end
 	end
 	--
@@ -2338,8 +2336,8 @@ function sections:dropdown(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = dropdown
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = dropdown
 		end
 	end
 	--
@@ -2560,8 +2558,8 @@ function sections:buttonbox(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = buttonbox
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = buttonbox
 		end
 	end
 	--
@@ -2875,8 +2873,8 @@ function sections:multibox(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = multibox
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = multibox
 		end
 	end
 	--
@@ -3084,8 +3082,8 @@ function sections:textbox(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = textbox
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = textbox
 		end
 	end
 	--
@@ -3316,8 +3314,8 @@ function sections:keybind(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = keybind
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = keybind
 		end
 	end
 	--
@@ -3955,8 +3953,8 @@ function sections:colorpicker(props)
 		or nil
 	--
 	if pointer then
-		if self.pointers then
-			self.pointers[tostring(pointer)] = colorpicker
+		if self.library.pointers then
+			self.library.pointers[tostring(pointer)] = colorpicker
 		end
 	end
 	--
