@@ -753,12 +753,11 @@ function library:saveconfig()
 	for i, v in pairs(self.pointers) do
 		cfg[i] = {}
 		for c, d in pairs(v) do
-			cfg[i][c] = {}
-			for x, z in pairs(d) do
-				if typeof(z.current) == "Color3" then
-					cfg[i][c][x] = { z.current.R, z.current.G, z.current.B }
+			if d.current ~= nil then
+				if typeof(d.current) == "Color3" then
+					cfg[i][c] = { d.current.R, d.current.G, d.current.B }
 				else
-					cfg[i][c][x] = z.current
+					cfg[i][c] = d.current
 				end
 			end
 		end
