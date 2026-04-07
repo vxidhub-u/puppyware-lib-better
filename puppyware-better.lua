@@ -749,37 +749,53 @@ end
 --
 function library:saveconfig()
 	local cfg = {}
-	--
-	for i, v in pairs(self.pointers) do
-		cfg[i] = {}
-		for c, d in pairs(v) do
-			cfg[i][c] = {}
-			for x, z in pairs(d) do
-				print("x: " .. tostring(x))
-				print("c: " .. tostring(c))
-				print("i: " .. tostring(i))
-				if typeof(z.current) == "Color3" then
-					cfg[i][c][x] = { z.current.R, z.current.G, z.current.B }
-				else
-					cfg[i][c][x] = z.current
-				end
+
+	for flag, object in pairs(self.pointers) do
+		if object and object.current ~= nil then
+			if typeof(object.current) == "Color3" then
+				cfg[flag] = {
+					R = object.current.R,
+					G = object.current.G,
+					B = object.current.B,
+				}
+			elseif typeof(object.current) == "EnumItem" then
+				cfg[flag] = tostring(object.current.Name)
+			else
+				cfg[flag] = object.current
 			end
 		end
 	end
-	--
-	return hs:JSONEncode(cfg)
+
+	local success, result = pcall(function()
+		return hs:JSONEncode(cfg)
+	end)
+
+	if not success then
+		warn("[CONFIG ERROR]: Failed to encode JSON:", result)
+		return "{}"
+	end
+
+	return result
 end
 --
-function library:loadconfig(cfg)
-	local cfg = hs:JSONDecode(readfile(cfg))
-	for i, v in pairs(cfg) do
-		for c, d in pairs(v) do
-			for x, z in pairs(d) do
-				if z ~= nil then
-					if self.pointers[i] ~= nil and self.pointers[i][c] ~= nil and self.pointers[i][c][x] ~= nil then
-						self.pointers[i][c][x]:set(z)
-					end
-				end
+function library:loadconfig(configName)
+	local success, cfg = pcall(function()
+		return hs:JSONDecode(readfile(configName))
+	end)
+
+	if not success or type(cfg) ~= "table" then
+		warn("[CONFIG ERROR]: Could not read or decode " .. tostring(configName))
+		return
+	end
+
+	for flag, value in pairs(cfg) do
+		local object = self.pointers[flag]
+
+		if object and object.set then
+			if type(value) == "table" and value.R and value.G and value.B then
+				object:set(Color3.new(value.R, value.G, value.B))
+			else
+				object:set(value)
 			end
 		end
 	end
