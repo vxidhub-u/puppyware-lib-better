@@ -2050,7 +2050,7 @@ function library:closewindows(ignore)
 	end
 end
 
-function Library:Toggle()
+function library:Toggle()
 	if not self.screen then
 		return
 	end
