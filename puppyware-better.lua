@@ -2050,6 +2050,14 @@ function library:closewindows(ignore)
 	end
 end
 
+function Library:Toggle()
+	if not self.screen then
+		return
+	end
+
+	self.screen.Enabled = not self.screen.Enabled
+end
+
 function library:Unload()
 	if self.ToggleConnection then
 		self.ToggleConnection:Disconnect()
