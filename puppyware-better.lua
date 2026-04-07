@@ -763,6 +763,10 @@ function library:saveconfig()
 		end
 	end
 	--
+
+	print("POINTERS:", self.pointers)
+	print("FIRST POINTER:", next(self.pointers))
+
 	return hs:JSONEncode(cfg)
 end
 --
