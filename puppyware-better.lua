@@ -753,20 +753,17 @@ function library:saveconfig()
 	for i, v in pairs(self.pointers) do
 		cfg[i] = {}
 		for c, d in pairs(v) do
-			if d.current ~= nil then
-				if typeof(d.current) == "Color3" then
-					cfg[i][c] = { d.current.R, d.current.G, d.current.B }
+			cfg[i][c] = {}
+			for x, z in pairs(d) do
+				if typeof(z.current) == "Color3" then
+					cfg[i][c][x] = { z.current.R, z.current.G, z.current.B }
 				else
-					cfg[i][c] = d.current
+					cfg[i][c][x] = z.current
 				end
 			end
 		end
 	end
 	--
-
-	print("POINTERS:", self.pointers)
-	print("FIRST POINTER:", next(self.pointers))
-
 	return hs:JSONEncode(cfg)
 end
 --
@@ -2070,7 +2067,7 @@ function library:Unload()
 		self.screen:Destroy()
 	end
 
-	--self.pointers = {}
+	self.pointers = {}
 
 	print("UI Unloaded Successfully")
 end
