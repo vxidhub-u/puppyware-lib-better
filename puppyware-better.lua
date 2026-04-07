@@ -2070,7 +2070,7 @@ function library:Unload()
 		self.screen:Destroy()
 	end
 
-	self.pointers = {}
+	--self.pointers = {}
 
 	print("UI Unloaded Successfully")
 end
