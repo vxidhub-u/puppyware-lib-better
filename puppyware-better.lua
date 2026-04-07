@@ -1930,6 +1930,7 @@ function sections:slider(props)
 	--
 	if pointer then
 		if self.pointers then
+			print("Hi: " .. tostring(pointer))
 			self.pointers[tostring(pointer)] = slider
 		end
 	end
